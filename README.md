@@ -1,6 +1,29 @@
 # GCcollab-API-demo
 
-## Local instalation
+## Querying
+
+### Examples
+
+#### Get users and the groups they belong to
+
+```
+
+query GetUserGroups {
+  users {
+    id
+    groupsJoined {
+      name
+    }
+  }
+}
+
+```
+
+### From python
+
+See `python_query.py` in the examples folder.
+
+## Local instalation/deployment
 
 ```
 npm install -g prisma@1.31.2
@@ -8,7 +31,6 @@ docker-compose up # sudo if running on linux
 cd prisma
 prisma deploy
 ```
-
 
 ## Kubernetes deployment
 
