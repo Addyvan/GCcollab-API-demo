@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: data-team-api-prisma
+  namespace: analytics
+  labels:
+    app: data-team-api-prisma
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: collab-api-prisma
+    spec:
+      containers:
+        - name: prisma
+          image: prismagraphql/prisma:1.31
+          ports:
+            - name: prisma-4466
+              containerPort: 4466
+          env:
+            - name: PRISMA_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: collab-api
+                  key: PRISMA_CONFIG
+          resources:
+            limits:
+              memory: "1024Mi"
+              cpu: "0.2"

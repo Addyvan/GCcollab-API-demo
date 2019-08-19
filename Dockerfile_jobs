@@ -1,0 +1,24 @@
+FROM node:8
+
+# Create app directory
+WORKDIR /usr/src/app
+
+RUN apt-get update && apt-get -y upgrade
+
+COPY prisma/datamodel.graphql .
+COPY jobs/prisma.yml .
+COPY jobs/seed-api.sh seed-api.sh
+COPY jobs/prisma-token.sh prisma-token.sh
+COPY jobs/prisma-list.sh prisma-list.sh
+COPY jobs/prisma-delete.sh prisma-delete.sh
+COPY jobs/prisma-reset.sh prisma-reset.sh
+COPY jobs/prisma-deploy.sh prisma-deploy.sh
+
+COPY scripts scripts
+COPY src src
+
+COPY package.json package.json
+RUN npm install
+RUN npm install -g typescript
+RUN npm install -g ts-node
+RUN npm install -g prisma@1.31.2

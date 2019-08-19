@@ -1,0 +1,12 @@
+endpoint: http://localhost:4466/demo
+datamodel: datamodel.graphql
+#secret: ${env:PRISMA_MANAGEMENT_API_SECRET}
+
+generate:
+  - generator: typescript-client
+    output: ../src/generated/prisma-client/
+
+hooks:
+  post-deploy:
+    - prisma generate
+    - npx nexus-prisma-generate --client ./src/generated/prisma-client --output ./src/generated/nexus-prisma # Runs the codegen tool from nexus-prisma

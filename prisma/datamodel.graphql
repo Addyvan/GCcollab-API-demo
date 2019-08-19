@@ -1,0 +1,44 @@
+type User {
+  id: ID! @id
+  guid: ID! @unique
+  email: String!
+  groupsJoined: [Group!]! @relationship(name: "GroupMembership")
+  #discussionsLiked: [Discussion!]! @relation(name: "LikedDiscussion")
+  authorOf: [Discussion!]! @relationship(name: "AuthorOfDiscussion")
+}
+
+type Group {
+  id: ID! @id
+  guid: ID! @unique
+  members: [User!]! @relationship(name: "GroupMembership")
+  discussions: [Discussion!]! @relationship(name: "GroupDiscussion")
+  name: String!
+  isPublic: Boolean!
+}
+
+type Discussion {
+  id: ID! @id
+  guid: ID! @unique
+  author: User! #@relation(name: "AuthorOfDiscussion")
+  group: Group! #@relation(name: "GroupDiscussion")
+  comments: [Comment!]! @relation(name: "CommentOnDiscussion")
+  #likedBy: [User!]! @relation(name: "LikedDiscussion")
+  #tags: [Tag!]! @relationship(name: "DiscussionTag")
+  title: String!
+  content: String!
+}
+
+type Comment {
+  id: ID! @id
+  guid: ID! @unique
+  author: User! @relation(name: "AuthorOfComment")
+  parentComment: Comment
+  content: String!
+  #likedBy: [User!]! @relationship(name: "LikedBy")
+}
+
+#type Tag {
+#  id: ID! @id
+#  name: String!
+#  discussions: [Discussion!]! @relationship(name: "DiscussionTag")
+#}

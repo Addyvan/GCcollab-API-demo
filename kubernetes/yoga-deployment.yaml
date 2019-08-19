@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: collab-api
+  name: collab-api
+  namespace: analytics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: collab-api
+  template:
+    metadata:
+      labels:
+        app: collab-api
+    spec:
+      containers:
+      - image: index.docker.io/addyvan/collab-api-demo:latest
+        name: collab-api
+        ports:
+          - containerPort: 4000
+        envFrom:
+        - configMapRef:
+            name: collab-api
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "0.15"

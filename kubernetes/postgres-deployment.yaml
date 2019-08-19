@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: data-team-api-postgres
+  namespace: analytics
+  labels:
+    app: data-team-api-postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: data-team-api-postgres
+    spec:
+      containers:
+        - name: data-team-api-postgres
+          image: 'postgres'
+          env:
+            - name: POSTGRES_USER
+              value: prisma
+            - name: POSTGRES_PASSWORD
+              value: prisma
+          ports:
+            - name: postgres-5432
+              containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              subPath: postgres
+              name: data-team-api-disk
+              readOnly: false
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.1"
+      volumes:
+        - name: data-team-api-disk
+          persistentVolumeClaim:
+            claimName: data-team-api-disk

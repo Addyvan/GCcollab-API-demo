@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: data-team-api-ingress
+  namespace: analytics
+  annotations:
+    kubernetes.io/tls-acme:  "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    - data.api.gccollab.ca
+    secretName: data-team-api-secret
+  rules:
+  - host: data.api.gccollab.ca
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: collab-api
+          servicePort: 4000
+      - path: /playground
+        backend:
+          serviceName: collab-api
+          servicePort: 4000

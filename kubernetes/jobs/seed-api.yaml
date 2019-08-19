@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: seed-api
+  namespace: analytics
+spec:
+  template:
+    spec:
+      containers:
+      - name: data-team-cli
+        image: index.docker.io/addyvan/prisma-helper:latest
+        workingDir: /usr/src/app
+        command: ["/bin/bash", "./seed-api.sh"]
+        envFrom:
+        - configMapRef:
+            name: collab-api
+      restartPolicy: Never
+  backoffLimit: 4
