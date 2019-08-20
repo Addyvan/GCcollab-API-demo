@@ -93,16 +93,19 @@ export interface NexusPrismaTypes {
       DiscussionCreateWithoutGroupInput: DiscussionCreateWithoutGroupInputInputObject
       UserCreateOneWithoutAuthorOfInput: UserCreateOneWithoutAuthorOfInputInputObject
       UserCreateWithoutAuthorOfInput: UserCreateWithoutAuthorOfInputInputObject
-      CommentCreateManyInput: CommentCreateManyInputInputObject
-      CommentCreateInput: CommentCreateInputInputObject
+      CommentCreateManyWithoutParentContentInput: CommentCreateManyWithoutParentContentInputInputObject
+      CommentCreateWithoutParentContentInput: CommentCreateWithoutParentContentInputInputObject
       UserCreateOneInput: UserCreateOneInputInputObject
       CommentCreateOneInput: CommentCreateOneInputInputObject
-      DiscussionCreateManyWithoutAuthorInput: DiscussionCreateManyWithoutAuthorInputInputObject
-      DiscussionCreateWithoutAuthorInput: DiscussionCreateWithoutAuthorInputInputObject
+      CommentCreateInput: CommentCreateInputInputObject
+      DiscussionCreateOneWithoutCommentsInput: DiscussionCreateOneWithoutCommentsInputInputObject
+      DiscussionCreateWithoutCommentsInput: DiscussionCreateWithoutCommentsInputInputObject
       GroupCreateOneWithoutDiscussionsInput: GroupCreateOneWithoutDiscussionsInputInputObject
       GroupCreateWithoutDiscussionsInput: GroupCreateWithoutDiscussionsInputInputObject
       UserCreateManyWithoutGroupsJoinedInput: UserCreateManyWithoutGroupsJoinedInputInputObject
       UserCreateWithoutGroupsJoinedInput: UserCreateWithoutGroupsJoinedInputInputObject
+      DiscussionCreateManyWithoutAuthorInput: DiscussionCreateManyWithoutAuthorInputInputObject
+      DiscussionCreateWithoutAuthorInput: DiscussionCreateWithoutAuthorInputInputObject
       UserUpdateInput: UserUpdateInputInputObject
       GroupUpdateManyWithoutMembersInput: GroupUpdateManyWithoutMembersInputInputObject
       GroupUpdateWithWhereUniqueWithoutMembersInput: GroupUpdateWithWhereUniqueWithoutMembersInputInputObject
@@ -113,9 +116,9 @@ export interface NexusPrismaTypes {
       UserUpdateOneRequiredWithoutAuthorOfInput: UserUpdateOneRequiredWithoutAuthorOfInputInputObject
       UserUpdateWithoutAuthorOfDataInput: UserUpdateWithoutAuthorOfDataInputInputObject
       UserUpsertWithoutAuthorOfInput: UserUpsertWithoutAuthorOfInputInputObject
-      CommentUpdateManyInput: CommentUpdateManyInputInputObject
-      CommentUpdateWithWhereUniqueNestedInput: CommentUpdateWithWhereUniqueNestedInputInputObject
-      CommentUpdateDataInput: CommentUpdateDataInputInputObject
+      CommentUpdateManyWithoutParentContentInput: CommentUpdateManyWithoutParentContentInputInputObject
+      CommentUpdateWithWhereUniqueWithoutParentContentInput: CommentUpdateWithWhereUniqueWithoutParentContentInputInputObject
+      CommentUpdateWithoutParentContentDataInput: CommentUpdateWithoutParentContentDataInputInputObject
       UserUpdateOneRequiredInput: UserUpdateOneRequiredInputInputObject
       UserUpdateDataInput: UserUpdateDataInputInputObject
       DiscussionUpdateManyWithoutAuthorInput: DiscussionUpdateManyWithoutAuthorInputInputObject
@@ -137,8 +140,12 @@ export interface NexusPrismaTypes {
       DiscussionUpdateManyDataInput: DiscussionUpdateManyDataInputInputObject
       UserUpsertNestedInput: UserUpsertNestedInputInputObject
       CommentUpdateOneInput: CommentUpdateOneInputInputObject
+      CommentUpdateDataInput: CommentUpdateDataInputInputObject
+      DiscussionUpdateOneRequiredWithoutCommentsInput: DiscussionUpdateOneRequiredWithoutCommentsInputInputObject
+      DiscussionUpdateWithoutCommentsDataInput: DiscussionUpdateWithoutCommentsDataInputInputObject
+      DiscussionUpsertWithoutCommentsInput: DiscussionUpsertWithoutCommentsInputInputObject
       CommentUpsertNestedInput: CommentUpsertNestedInputInputObject
-      CommentUpsertWithWhereUniqueNestedInput: CommentUpsertWithWhereUniqueNestedInputInputObject
+      CommentUpsertWithWhereUniqueWithoutParentContentInput: CommentUpsertWithWhereUniqueWithoutParentContentInputInputObject
       CommentScalarWhereInput: CommentScalarWhereInputInputObject
       CommentUpdateManyWithWhereNestedInput: CommentUpdateManyWithWhereNestedInputInputObject
       CommentUpdateManyDataInput: CommentUpdateManyDataInputInputObject
@@ -741,6 +748,7 @@ type CommentObject =
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'guid', args?: [] | false, alias?: string  } 
   | { name: 'author', args?: [] | false, alias?: string  } 
+  | { name: 'parentContent', args?: [] | false, alias?: string  } 
   | { name: 'parentComment', args?: [] | false, alias?: string  } 
   | { name: 'content', args?: [] | false, alias?: string  } 
 
@@ -748,6 +756,7 @@ type CommentFields =
   | 'id'
   | 'guid'
   | 'author'
+  | 'parentContent'
   | 'parentComment'
   | 'content'
 
@@ -784,6 +793,19 @@ export interface CommentFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.User> | prisma.User
+  }
+  parentContent: {
+    type: 'Discussion'
+    args: {}
+    description: string
+    list: undefined
+    nullable: false
+    resolve: (
+      root: core.RootValue<"Comment">,
+      args: {  }  ,
+      context: core.GetGen<"context">,
+      info?: GraphQLResolveInfo
+    ) => Promise<prisma.Discussion> | prisma.Discussion
   }
   parentComment: {
     type: 'Comment'
@@ -2780,6 +2802,7 @@ export interface CommentWhereInput {
   guid_ends_with?: string | null
   guid_not_ends_with?: string | null
   author?: UserWhereInput | null
+  parentContent?: DiscussionWhereInput | null
   parentComment?: CommentWhereInput | null
   content?: string | null
   content_not?: string | null
@@ -2830,6 +2853,7 @@ export type CommentWhereInputInputObject =
   | { name: 'guid_ends_with', alias?: string  } 
   | { name: 'guid_not_ends_with', alias?: string  } 
   | { name: 'author', alias?: string  } 
+  | { name: 'parentContent', alias?: string  } 
   | { name: 'parentComment', alias?: string  } 
   | { name: 'content', alias?: string  } 
   | { name: 'content_not', alias?: string  } 
@@ -2928,7 +2952,7 @@ export interface DiscussionCreateWithoutGroupInput {
   id?: string | null
   guid?: string
   author?: UserCreateOneWithoutAuthorOfInput
-  comments?: CommentCreateManyInput | null
+  comments?: CommentCreateManyWithoutParentContentInput | null
   title?: string
   content?: string
 }
@@ -2963,24 +2987,24 @@ export type UserCreateWithoutAuthorOfInputInputObject =
   | { name: 'email', alias?: string  } 
   | { name: 'groupsJoined', alias?: string  } 
   
-export interface CommentCreateManyInput {
-  create?: CommentCreateInput[]
+export interface CommentCreateManyWithoutParentContentInput {
+  create?: CommentCreateWithoutParentContentInput[]
   connect?: CommentWhereUniqueInput[]
 }
-export type CommentCreateManyInputInputObject =
-  | Extract<keyof CommentCreateManyInput, string>
+export type CommentCreateManyWithoutParentContentInputInputObject =
+  | Extract<keyof CommentCreateManyWithoutParentContentInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface CommentCreateInput {
+export interface CommentCreateWithoutParentContentInput {
   id?: string | null
   guid?: string
   author?: UserCreateOneInput
   parentComment?: CommentCreateOneInput | null
   content?: string
 }
-export type CommentCreateInputInputObject =
-  | Extract<keyof CommentCreateInput, string>
+export type CommentCreateWithoutParentContentInputInputObject =
+  | Extract<keyof CommentCreateWithoutParentContentInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'guid', alias?: string  } 
   | { name: 'author', alias?: string  } 
@@ -3005,29 +3029,46 @@ export type CommentCreateOneInputInputObject =
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface DiscussionCreateManyWithoutAuthorInput {
-  create?: DiscussionCreateWithoutAuthorInput[]
-  connect?: DiscussionWhereUniqueInput[]
+export interface CommentCreateInput {
+  id?: string | null
+  guid?: string
+  author?: UserCreateOneInput
+  parentContent?: DiscussionCreateOneWithoutCommentsInput
+  parentComment?: CommentCreateOneInput | null
+  content?: string
 }
-export type DiscussionCreateManyWithoutAuthorInputInputObject =
-  | Extract<keyof DiscussionCreateManyWithoutAuthorInput, string>
+export type CommentCreateInputInputObject =
+  | Extract<keyof CommentCreateInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'guid', alias?: string  } 
+  | { name: 'author', alias?: string  } 
+  | { name: 'parentContent', alias?: string  } 
+  | { name: 'parentComment', alias?: string  } 
+  | { name: 'content', alias?: string  } 
+  
+export interface DiscussionCreateOneWithoutCommentsInput {
+  create?: DiscussionCreateWithoutCommentsInput | null
+  connect?: DiscussionWhereUniqueInput | null
+}
+export type DiscussionCreateOneWithoutCommentsInputInputObject =
+  | Extract<keyof DiscussionCreateOneWithoutCommentsInput, string>
   | { name: 'create', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
-export interface DiscussionCreateWithoutAuthorInput {
+export interface DiscussionCreateWithoutCommentsInput {
   id?: string | null
   guid?: string
+  author?: UserCreateOneWithoutAuthorOfInput
   group?: GroupCreateOneWithoutDiscussionsInput
-  comments?: CommentCreateManyInput | null
   title?: string
   content?: string
 }
-export type DiscussionCreateWithoutAuthorInputInputObject =
-  | Extract<keyof DiscussionCreateWithoutAuthorInput, string>
+export type DiscussionCreateWithoutCommentsInputInputObject =
+  | Extract<keyof DiscussionCreateWithoutCommentsInput, string>
   | { name: 'id', alias?: string  } 
   | { name: 'guid', alias?: string  } 
+  | { name: 'author', alias?: string  } 
   | { name: 'group', alias?: string  } 
-  | { name: 'comments', alias?: string  } 
   | { name: 'title', alias?: string  } 
   | { name: 'content', alias?: string  } 
   
@@ -3076,6 +3117,32 @@ export type UserCreateWithoutGroupsJoinedInputInputObject =
   | { name: 'guid', alias?: string  } 
   | { name: 'email', alias?: string  } 
   | { name: 'authorOf', alias?: string  } 
+  
+export interface DiscussionCreateManyWithoutAuthorInput {
+  create?: DiscussionCreateWithoutAuthorInput[]
+  connect?: DiscussionWhereUniqueInput[]
+}
+export type DiscussionCreateManyWithoutAuthorInputInputObject =
+  | Extract<keyof DiscussionCreateManyWithoutAuthorInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface DiscussionCreateWithoutAuthorInput {
+  id?: string | null
+  guid?: string
+  group?: GroupCreateOneWithoutDiscussionsInput
+  comments?: CommentCreateManyWithoutParentContentInput | null
+  title?: string
+  content?: string
+}
+export type DiscussionCreateWithoutAuthorInputInputObject =
+  | Extract<keyof DiscussionCreateWithoutAuthorInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'guid', alias?: string  } 
+  | { name: 'group', alias?: string  } 
+  | { name: 'comments', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'content', alias?: string  } 
   
 export interface UserUpdateInput {
   guid?: string | null
@@ -3170,7 +3237,7 @@ export type DiscussionUpdateWithWhereUniqueWithoutGroupInputInputObject =
 export interface DiscussionUpdateWithoutGroupDataInput {
   guid?: string | null
   author?: UserUpdateOneRequiredWithoutAuthorOfInput | null
-  comments?: CommentUpdateManyInput | null
+  comments?: CommentUpdateManyWithoutParentContentInput | null
   title?: string | null
   content?: string | null
 }
@@ -3215,46 +3282,46 @@ export type UserUpsertWithoutAuthorOfInputInputObject =
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
   
-export interface CommentUpdateManyInput {
-  create?: CommentCreateInput[]
-  update?: CommentUpdateWithWhereUniqueNestedInput[]
-  upsert?: CommentUpsertWithWhereUniqueNestedInput[]
+export interface CommentUpdateManyWithoutParentContentInput {
+  create?: CommentCreateWithoutParentContentInput[]
   delete?: CommentWhereUniqueInput[]
   connect?: CommentWhereUniqueInput[]
   set?: CommentWhereUniqueInput[]
   disconnect?: CommentWhereUniqueInput[]
+  update?: CommentUpdateWithWhereUniqueWithoutParentContentInput[]
+  upsert?: CommentUpsertWithWhereUniqueWithoutParentContentInput[]
   deleteMany?: CommentScalarWhereInput[]
   updateMany?: CommentUpdateManyWithWhereNestedInput[]
 }
-export type CommentUpdateManyInputInputObject =
-  | Extract<keyof CommentUpdateManyInput, string>
+export type CommentUpdateManyWithoutParentContentInputInputObject =
+  | Extract<keyof CommentUpdateManyWithoutParentContentInput, string>
   | { name: 'create', alias?: string  } 
-  | { name: 'update', alias?: string  } 
-  | { name: 'upsert', alias?: string  } 
   | { name: 'delete', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   | { name: 'set', alias?: string  } 
   | { name: 'disconnect', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
   | { name: 'deleteMany', alias?: string  } 
   | { name: 'updateMany', alias?: string  } 
   
-export interface CommentUpdateWithWhereUniqueNestedInput {
+export interface CommentUpdateWithWhereUniqueWithoutParentContentInput {
   where?: CommentWhereUniqueInput
-  data?: CommentUpdateDataInput
+  data?: CommentUpdateWithoutParentContentDataInput
 }
-export type CommentUpdateWithWhereUniqueNestedInputInputObject =
-  | Extract<keyof CommentUpdateWithWhereUniqueNestedInput, string>
+export type CommentUpdateWithWhereUniqueWithoutParentContentInputInputObject =
+  | Extract<keyof CommentUpdateWithWhereUniqueWithoutParentContentInput, string>
   | { name: 'where', alias?: string  } 
   | { name: 'data', alias?: string  } 
   
-export interface CommentUpdateDataInput {
+export interface CommentUpdateWithoutParentContentDataInput {
   guid?: string | null
   author?: UserUpdateOneRequiredInput | null
   parentComment?: CommentUpdateOneInput | null
   content?: string | null
 }
-export type CommentUpdateDataInputInputObject =
-  | Extract<keyof CommentUpdateDataInput, string>
+export type CommentUpdateWithoutParentContentDataInputInputObject =
+  | Extract<keyof CommentUpdateWithoutParentContentDataInput, string>
   | { name: 'guid', alias?: string  } 
   | { name: 'author', alias?: string  } 
   | { name: 'parentComment', alias?: string  } 
@@ -3321,7 +3388,7 @@ export type DiscussionUpdateWithWhereUniqueWithoutAuthorInputInputObject =
 export interface DiscussionUpdateWithoutAuthorDataInput {
   guid?: string | null
   group?: GroupUpdateOneRequiredWithoutDiscussionsInput | null
-  comments?: CommentUpdateManyInput | null
+  comments?: CommentUpdateManyWithoutParentContentInput | null
   title?: string | null
   content?: string | null
 }
@@ -3715,6 +3782,58 @@ export type CommentUpdateOneInputInputObject =
   | { name: 'disconnect', alias?: string  } 
   | { name: 'connect', alias?: string  } 
   
+export interface CommentUpdateDataInput {
+  guid?: string | null
+  author?: UserUpdateOneRequiredInput | null
+  parentContent?: DiscussionUpdateOneRequiredWithoutCommentsInput | null
+  parentComment?: CommentUpdateOneInput | null
+  content?: string | null
+}
+export type CommentUpdateDataInputInputObject =
+  | Extract<keyof CommentUpdateDataInput, string>
+  | { name: 'guid', alias?: string  } 
+  | { name: 'author', alias?: string  } 
+  | { name: 'parentContent', alias?: string  } 
+  | { name: 'parentComment', alias?: string  } 
+  | { name: 'content', alias?: string  } 
+  
+export interface DiscussionUpdateOneRequiredWithoutCommentsInput {
+  create?: DiscussionCreateWithoutCommentsInput | null
+  update?: DiscussionUpdateWithoutCommentsDataInput | null
+  upsert?: DiscussionUpsertWithoutCommentsInput | null
+  connect?: DiscussionWhereUniqueInput | null
+}
+export type DiscussionUpdateOneRequiredWithoutCommentsInputInputObject =
+  | Extract<keyof DiscussionUpdateOneRequiredWithoutCommentsInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  
+export interface DiscussionUpdateWithoutCommentsDataInput {
+  guid?: string | null
+  author?: UserUpdateOneRequiredWithoutAuthorOfInput | null
+  group?: GroupUpdateOneRequiredWithoutDiscussionsInput | null
+  title?: string | null
+  content?: string | null
+}
+export type DiscussionUpdateWithoutCommentsDataInputInputObject =
+  | Extract<keyof DiscussionUpdateWithoutCommentsDataInput, string>
+  | { name: 'guid', alias?: string  } 
+  | { name: 'author', alias?: string  } 
+  | { name: 'group', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'content', alias?: string  } 
+  
+export interface DiscussionUpsertWithoutCommentsInput {
+  update?: DiscussionUpdateWithoutCommentsDataInput
+  create?: DiscussionCreateWithoutCommentsInput
+}
+export type DiscussionUpsertWithoutCommentsInputInputObject =
+  | Extract<keyof DiscussionUpsertWithoutCommentsInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
+  
 export interface CommentUpsertNestedInput {
   update?: CommentUpdateDataInput
   create?: CommentCreateInput
@@ -3724,13 +3843,13 @@ export type CommentUpsertNestedInputInputObject =
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
   
-export interface CommentUpsertWithWhereUniqueNestedInput {
+export interface CommentUpsertWithWhereUniqueWithoutParentContentInput {
   where?: CommentWhereUniqueInput
-  update?: CommentUpdateDataInput
-  create?: CommentCreateInput
+  update?: CommentUpdateWithoutParentContentDataInput
+  create?: CommentCreateWithoutParentContentInput
 }
-export type CommentUpsertWithWhereUniqueNestedInputInputObject =
-  | Extract<keyof CommentUpsertWithWhereUniqueNestedInput, string>
+export type CommentUpsertWithWhereUniqueWithoutParentContentInputInputObject =
+  | Extract<keyof CommentUpsertWithWhereUniqueWithoutParentContentInput, string>
   | { name: 'where', alias?: string  } 
   | { name: 'update', alias?: string  } 
   | { name: 'create', alias?: string  } 
@@ -4046,7 +4165,7 @@ export interface DiscussionCreateInput {
   guid?: string
   author?: UserCreateOneWithoutAuthorOfInput
   group?: GroupCreateOneWithoutDiscussionsInput
-  comments?: CommentCreateManyInput | null
+  comments?: CommentCreateManyWithoutParentContentInput | null
   title?: string
   content?: string
 }
@@ -4064,7 +4183,7 @@ export interface DiscussionUpdateInput {
   guid?: string | null
   author?: UserUpdateOneRequiredWithoutAuthorOfInput | null
   group?: GroupUpdateOneRequiredWithoutDiscussionsInput | null
-  comments?: CommentUpdateManyInput | null
+  comments?: CommentUpdateManyWithoutParentContentInput | null
   title?: string | null
   content?: string | null
 }
@@ -4091,6 +4210,7 @@ export type DiscussionUpdateManyMutationInputInputObject =
 export interface CommentUpdateInput {
   guid?: string | null
   author?: UserUpdateOneRequiredInput | null
+  parentContent?: DiscussionUpdateOneRequiredWithoutCommentsInput | null
   parentComment?: CommentUpdateOneInput | null
   content?: string | null
 }
@@ -4098,6 +4218,7 @@ export type CommentUpdateInputInputObject =
   | Extract<keyof CommentUpdateInput, string>
   | { name: 'guid', alias?: string  } 
   | { name: 'author', alias?: string  } 
+  | { name: 'parentContent', alias?: string  } 
   | { name: 'parentComment', alias?: string  } 
   | { name: 'content', alias?: string  } 
   

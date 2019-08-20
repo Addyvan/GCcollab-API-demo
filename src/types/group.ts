@@ -5,6 +5,7 @@ const Group = prismaObjectType({
   definition(t : any) {
     t.prismaFields([
       'id',
+      'guid',
       {
         name: 'members',
         args: ['*'],

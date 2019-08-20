@@ -7,7 +7,10 @@ RUN apt-get update && apt-get -y upgrade
 
 COPY prisma/datamodel.graphql .
 COPY jobs/prisma.yml .
-COPY jobs/seed-api.sh seed-api.sh
+COPY jobs/seed-users.sh seed-users.sh
+COPY jobs/seed-groups.sh seed-groups.sh
+COPY jobs/seed-discussions.sh seed-discussions.sh
+COPY jobs/seed-comments.sh seed-comments.sh
 COPY jobs/prisma-token.sh prisma-token.sh
 COPY jobs/prisma-list.sh prisma-list.sh
 COPY jobs/prisma-delete.sh prisma-delete.sh

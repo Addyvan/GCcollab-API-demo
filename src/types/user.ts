@@ -5,6 +5,7 @@ const User = prismaObjectType({
   definition(t : any) {
     t.prismaFields([
       'id',
+      'guid',
       'email',
       {
         name: 'groupsJoined',

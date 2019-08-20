@@ -5,6 +5,7 @@ const Discussion = prismaObjectType({
   definition(t : any) {
     t.prismaFields([
       'id',
+      'guid',
       'author',
       'group',
       {

@@ -32,6 +32,7 @@ type Comment {
   id: ID! @id
   guid: ID! @unique
   author: User! @relation(name: "AuthorOfComment")
+  parentContent: Discussion! @relation(name: "CommentOnDiscussion")
   parentComment: Comment
   content: String!
   #likedBy: [User!]! @relationship(name: "LikedBy")
